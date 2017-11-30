@@ -1,0 +1,12 @@
+{
+    "name": "paulzi/ipcamera-telergram-bot",
+    "type": "project",
+    "require": {
+        "longman/telegram-bot": "^0.50"
+    },
+    "autoload": {
+        "psr-4": {
+            "paulzi\\ipcamera\\": "src/"
+        }
+    }
+}
