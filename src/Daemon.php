@@ -342,7 +342,7 @@ class Daemon
     {
         if (!empty($this->bot->config['logs'])) {
             $string = date('Y-m-d H:i:s') . " [{$level}] {$string}" . PHP_EOL;
-            file_put_contents($this->bot->config['logs'], $string, FILE_APPEND | LOCK_EX);
+            file_put_contents($this->bot->config['logs']['daemon'], $string, FILE_APPEND | LOCK_EX);
         }
     }
 }
