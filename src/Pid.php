@@ -26,7 +26,7 @@ class Pid
             return false;
         }
         $pid = (int)file_get_contents($this->file);
-        if ($pid == getmygid()) {
+        if ($pid == getmypid()) {
             return true;
         }
         passthru("ps -p $pid > /dev/null", $result);

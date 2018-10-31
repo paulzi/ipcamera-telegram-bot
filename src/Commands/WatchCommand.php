@@ -30,7 +30,7 @@ class WatchCommand extends UserCommand
             return $this->sendText("\xE2\x9D\x8C Слежение уже запущено");
         }
 
-        passthru('nohup php daemon.php > /dev/null 2>&1 &', $result);
+        passthru('nohup php watch.php > /dev/null 2>&1 &', $result);
         if (!$result) {
             return $this->sendText("\xE2\x9C\x85 Слежение запущено");
         } else {
