@@ -26,7 +26,7 @@ class StatusCommand extends UserCommand
         }
 
         $pid = new Pid('pid/bot.pid');
-        if ($pid->check()) {
+        if ($pid->isRunning()) {
             $deviceStatus = file_get_contents($this->telegram->config['dataDir'] . '/device-status.json');
             $deviceStatus = json_decode($deviceStatus, true);
             $now    = time();

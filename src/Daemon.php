@@ -45,7 +45,7 @@ class Daemon
     public function run()
     {
         $this->pid = new Pid('pid/bot.pid');
-        if ($this->pid->check()) {
+        if ($this->pid->isRunning()) {
             $this->warning('Слежение за папкой уже запущено');
         }
         $this->info('Запускаем слежение за папкой', true);
@@ -70,9 +70,6 @@ class Daemon
             }
             $this->checkFolder();
             $this->checkDeviceStatus();
-            if (!$this->pid->check()) {
-                break;
-            }
             $i = ($i + 1) % $this->bot->config['checkMacsPeriod'];
             sleep(1);
         }

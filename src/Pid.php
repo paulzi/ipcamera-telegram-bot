@@ -8,6 +8,16 @@ class Pid
      */
     protected $file;
 
+    /**
+     * @var resource
+     */
+    protected $fh;
+
+    /**
+     * @var bool
+     */
+    private $_started = false;
+
 
     /**
      * @param string $file
@@ -18,42 +28,86 @@ class Pid
     }
 
     /**
+     * Проверяет, запущен ли процесс
      * @return bool
      */
-    public function check()
+    public function isRunning()
     {
-        if (!file_exists($this->file)) {
-            return false;
-        }
-        $pid = (int)file_get_contents($this->file);
-        if ($pid == getmypid()) {
+        if ($this->_started) {
             return true;
         }
-        passthru("ps -p $pid > /dev/null", $result);
-        return !$result;
+        $this->fh = fopen($this->file, 'c');
+        if (!flock($this->fh, LOCK_EX | LOCK_NB)) {
+            fclose($this->fh);
+            return false;
+        }
+        fclose($this->fh);
+        return true;
     }
 
     /**
+     * Запускает процесс
+     * @param bool $wait Ожидать завершения другого процесса
+     * @return bool
      */
-    public function start()
+    public function start($wait = false)
     {
-        file_put_contents($this->file, getmypid());
+        $flags = $wait ? LOCK_EX : LOCK_EX | LOCK_NB;
+        $this->fh = fopen($this->file, 'c');
+        if (!flock($this->fh, $flags)) {
+            fclose($this->fh);
+            return false;
+        }
+        $this->_started = true;
+        $pid = (string)getmypid();
+        ftruncate($this->fh, 0);
+        fwrite($this->fh, $pid, strlen($pid));
+        fflush($this->fh);
+        return true;
     }
 
     /**
+     * Завершает текущий запущенный процесс
+     * @return bool
      */
     public function stop()
     {
-        if (file_exists($this->file)) {
-            unlink($this->file);
+        if (!$this->_started) {
+            return false;
         }
+        fclose($this->fh);
+        @unlink($this->file);
+        $this->_started = false;
+        return true;
     }
 
     /**
-     * @return int
+     * Завершает процесс запущенный в том числе в другом процессе
+     * @param int $signal Тип отправляемого сигнала
+     * @return bool
+     */
+    public function kill($signal = SIGTERM)
+    {
+        if ($this->_started) {
+            return $this->stop();
+        }
+        $pid = $this->getPid();
+        if (!$pid) {
+            return false;
+        }
+        return posix_kill($pid, $signal);
+    }
+
+    /**
+     * Возвращает pid запущенного процесса
+     * @return int|false
      */
     public function getPid()
     {
-        return (int)file_get_contents($this->file);
+        if ($this->_started) {
+            return getmypid();
+        }
+        $pid = @file_get_contents($this->file);
+        return $pid !== false ? (int)$pid : false;
     }
 }

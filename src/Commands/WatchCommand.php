@@ -26,7 +26,7 @@ class WatchCommand extends UserCommand
         }
 
         $pid = new Pid('pid/bot.pid');
-        if ($pid->check()) {
+        if ($pid->isRunning()) {
             return $this->sendText("\xE2\x9D\x8C Слежение уже запущено");
         }
 
