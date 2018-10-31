@@ -127,7 +127,7 @@ class Daemon
         foreach ($macs as $name => $data) {
             $mac = $data['mac'];
             $ip  = $data['ip'];
-            $output = exec("arp-scan -q --retry=1 --timeout=500 --numeric --destaddr={$mac} {$ip} | grep -oP --color=never \"{$mac}\"");
+            $output = exec("arp-scan -q --retry=3 --timeout=500 --numeric --destaddr={$mac} {$ip} | grep -oP --color=never \"{$mac}\"");
             $result[$name] = $output === $mac;
         }
         return $result;
