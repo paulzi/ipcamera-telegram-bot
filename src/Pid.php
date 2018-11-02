@@ -39,10 +39,10 @@ class Pid
         $this->fh = fopen($this->file, 'c');
         if (!flock($this->fh, LOCK_EX | LOCK_NB)) {
             fclose($this->fh);
-            return false;
+            return true;
         }
         fclose($this->fh);
-        return true;
+        return false;
     }
 
     /**

@@ -45,11 +45,10 @@ class Daemon
     public function run()
     {
         $this->pid = new Pid('pid/bot.pid');
-        if ($this->pid->isRunning()) {
+        if (!$this->pid->start()) {
             $this->warning('Слежение за папкой уже запущено');
         }
         $this->info('Запускаем слежение за папкой', true);
-        $this->pid->start();
         try {
             $this->loop();
         } catch (\Exception $e) {
