@@ -46,7 +46,7 @@ class Daemon
     {
         $this->pid = new Pid('pid/bot.pid');
         if (!$this->pid->start()) {
-            $this->warning('Слежение за папкой уже запущено');
+            $this->info('Слежение за папкой уже запущено');
         }
         $this->info('Запускаем слежение за папкой', true);
         try {
