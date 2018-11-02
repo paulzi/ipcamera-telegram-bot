@@ -30,7 +30,11 @@ class WatchStopCommand extends UserCommand
             return $this->sendText("\xE2\x9D\x8C Слежение не запущено");
         }
 
-        $pid->kill();
-        return $this->sendText("\xE2\x9C\x85 Слежение остановлено");
+        passthru("kill {$pid->getPid()}", $result);
+        if (!$result) {
+            return $this->sendText("\xE2\x9C\x85 Слежение остановлено");
+        } else {
+            return $this->sendText("\xE2\x9D\x8C Не удалось остановить слежение");
+        }
     }
 }
