@@ -33,4 +33,4 @@ php set.php
 
 7) Send `/watch` to bot in chat
 
-8) add `* * * * php watch.php` in CRON for auto-recovery daemon
+8) add `* * * * * php watch.php` in CRON for auto-recovery daemon
